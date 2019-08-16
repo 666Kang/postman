@@ -1,0 +1,72 @@
+这里有一个接口自动化介绍的比较好的文章  https://blog.csdn.net/cai_iac/article/details/81030619
+
+接口自动化有使用外部数据的自动化测试，还有依靠接口数据依赖的自动化测试
+
+一、使用外部数据
+1.使用外部data集，需要先在per-request script中声明参数名，比如 pm.globals.set("type","data.type"),
+
+2.在body中传参，使用引用变量的方式{{type}}
+
+3.外部数据集使用CSV文件，也可以用JSON文件，只是编写数据的格式不同。
+CSV:
+username,password
+test1,123456
+test2,222222
+test3,123456
+test4,444444
+
+JSON：
+[
+  {
+    "username": "test1",
+    "password": "123456"
+  },
+  {
+    "username": "test2",
+    "password": "222222"
+  },
+  {
+    "username": "test3",
+    "password": "123456"
+  },
+  {
+    "username": "test4",
+    "password": "444444"
+  }
+]
+
+4.之后就可以对相应的接口开始批量测试了，在进行测试时，可以选择迭代次数和要上传的data集
+
+二、接口依赖
+案例：
+注册、登录、实名认证一、实名认证二，按照顺序请求这四个接口，在登录返回的数据中，有一个merchantId返回值，
+这个返回值将作为实名认证一和实名认证二的请求参数，对这四个接口实现自动化执行。
+
+其实这个参数merchantId，就是请求依赖的那个参数值，方法很简单：
+
+1.在登录接口的Tests中，获取这个返回值，并且将这个返回值设置成环境变量
+
+//将返回的内容转为 json 格式，并且取到 merchantId 内容，添加到环境变量中
+  var jsonData = JSON.parse(responseBody);
+//merchantId的取值方式视具体的 json 数据结构而定
+  postman.setEnvironmentVariable("merchantId",jsonData.data.merchantId);
+  
+2.添加完成后，可以点开可视化的环境变成查看，看这个merchantId和他的值是否已被添加到了环境变量当中
+
+3.因为已经设置了环境变量，所以在实名认证一、实名认证二中，key-value直接使用merchantId-{{merchantId}},便可以直接取到merchantId的值
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
