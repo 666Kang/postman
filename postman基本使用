@@ -1,4 +1,4 @@
-postman的基本使用方法，在CSDN上有很多，不做过多的描述，在这里只是总结一些。
+##postman的基本使用方法，在CSDN上有很多，不做过多的描述，在这里只是总结一些。
 
 1.使用引用变量{{URL}},URL可以在全局变量中使用，也可以在环境变量中使用，要看你的个人设置
 
@@ -19,5 +19,32 @@ postman的基本使用方法，在CSDN上有很多，不做过多的描述，在
 7.如果一个变量的当前活动环境与一个全局变量共享他的名字，环境变量将优先考虑。（“窄”的优先）
 
 8.Tests和Pre-request Script，使用自带的snippets，可以解决大部分问题
+
+9.可以在Tests中添加断言，snippets中提供了很多的断言方式，例如：
+  //1.检测返回的结果包含字段 Response body:Contains a string
+  /*
+  pm.test("Body matches string", function () {
+      pm.expect(pm.response.text()).to.include("string_you_want_to_search");
+  });
+  */
+  pm.test("检测返回结果中包含字段", function () {
+     pm.expect(pm.response.text()).to.include("操作成功");
+  });
+
+  //2.获取环境变量的值：pm.variables.get("variable_key");
+  var data=pm.environment.get("something_uat1");
+  tests['检测设置的环境变量值']=data==="http://shomething.uat1.rs.com";
+
+  //3.测试返回的结果包含code:200
+  /*
+  pm.test("Status code is 200", function () {
+      pm.response.to.have.status(200);
+  });
+  */
+  pm.test("Status code is 200", function () {
+      pm.response.to.have.status(200);
+  });
+  
+参考链接：https://blog.csdn.net/mayanyun2013/article/details/88697748
 
 
